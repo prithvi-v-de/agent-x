@@ -1,1 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentCore Identity Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #08090c;
+            --surface: #0f1117;
+            --surface-2: #161821;
+            --border: #1e2030;
+            --border-active: #2e3250;
+            --text: #c8cdd8;
+            --text-dim: #5c6178;
+            --text-bright: #e8ecf4;
+            --accent-green: #34d399;
+            --accent-green-dim: rgba(52, 211, 153, 0.1);
+            --accent-green-glow: rgba(52, 211, 153, 0.15);
+            --accent-red: #f87171;
+            --accent-red-dim: rgba(248, 113, 113, 0.1);
+            --accent-blue: #60a5fa;
+            --accent-blue-dim: rgba(96, 165, 250, 0.1);
+            --accent-amber: #fbbf24;
+            --accent-amber-dim: rgba(251, 191, 36, 0.1);
+            --agent-a: #818cf8;
+            --agent-a-dim: rgba(129, 140, 248, 0.08);
+            --agent-a-border: rgba(129, 140, 248, 0.2);
+            --agent-b: #38bdf8;
+            --agent-b-dim: rgba(56, 189, 248, 0.08);
+            --agent-b-border: rgba(56, 189, 248, 0.2);
+            --radius: 8px;
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Instrument Sans', -apple-system, sans-serif;
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Subtle grid background --- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Header --- */
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .header-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-bright);
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 span {
+            background: linear-gradient(135deg, var(--agent-a), var(--agent-b));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 15px;
+            color: var(--text-dim);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* --- Input Area --- */
+        .input-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .input-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-row input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            font-family: var(--mono);
+            font-size: 14px;
+            color: var(--text-bright);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-row input:focus {
+            border-color: var(--border-active);
+        }
+
+        .input-row input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: var(--radius);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--text-bright);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            background: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* --- Quick links --- */
+        .quick-links {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+            background: transparent;
+        }
+
+        .quick-link:hover {
+            border-color: var(--border-active);
+            color: var(--text);
+        }
+
+        .quick-link.github:hover { border-color: var(--agent-a-border); color: var(--agent-a); }
+        .quick-link.jira:hover { border-color: var(--agent-b-border); color: var(--agent-b); }
+
+        /* --- Agent Cards Side by Side --- */
+        .agents-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 700px) {
+            .agents-grid { grid-template-columns: 1fr; }
+        }
+
+        .agent-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .agent-card.agent-a { border-color: var(--agent-a-border); }
+        .agent-card.agent-b { border-color: var(--agent-b-border); }
+
+        .agent-card-header {
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .agent-card.agent-a .agent-card-header { background: var(--agent-a-dim); }
+        .agent-card.agent-b .agent-card-header { background: var(--agent-b-dim); }
+
+        .agent-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .agent-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .agent-a .agent-icon { background: var(--agent-a-dim); border: 1px solid var(--agent-a-border); }
+        .agent-b .agent-icon { background: var(--agent-b-dim); border: 1px solid var(--agent-b-border); }
+
+        .agent-name-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-bright);
+        }
+
+        .agent-name-sub {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 1px;
+        }
+
+        .agent-scope-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .agent-a .agent-scope-badge {
+            background: var(--agent-a-dim);
+            color: var(--agent-a);
+            border: 1px solid var(--agent-a-border);
+        }
+
+        .agent-b .agent-scope-badge {
+            background: var(--agent-b-dim);
+            color: var(--agent-b);
+            border: 1px solid var(--agent-b-border);
+        }
+
+        .agent-card-body {
+            padding: 20px;
+            min-height: 120px;
+        }
+
+        .agent-idle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+            color: var(--text-dim);
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        /* --- Result States --- */
+        .result-block {
+            border-radius: 8px;
+            padding: 16px;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-block.accepted {
+            background: var(--accent-green-dim);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+
+        .result-block.rejected {
+            background: var(--accent-red-dim);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        .result-block.auth-required {
+            background: var(--accent-amber-dim);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .result-block.error {
+            background: var(--accent-red-dim);
+            border: 1px solid rgba(248, 113, 113, 0.15);
+        }
+
+        .result-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .result-action.accepted { color: var(--accent-green); }
+        .result-action.rejected { color: var(--accent-red); }
+        .result-action.auth-required { color: var(--accent-amber); }
+        .result-action.error { color: var(--accent-red); }
+
+        .result-detail {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .result-detail code {
+            font-family: var(--mono);
+            font-size: 11px;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .auth-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 8px 16px;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 6px;
+            background: rgba(251, 191, 36, 0.08);
+            color: var(--accent-amber);
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+
+        .auth-btn:hover {
+            background: rgba(251, 191, 36, 0.15);
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+
+        /* --- Trace Log --- */
+        .trace-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .trace-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .trace-title {
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .trace-body {
+            padding: 16px 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .trace-entry {
+            font-family: var(--mono);
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--text-dim);
+            padding: 2px 0;
+        }
+
+        .trace-entry .agent-tag {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-right: 6px;
+        }
+
+        .trace-entry .agent-tag.a { background: var(--agent-a-dim); color: var(--agent-a); }
+        .trace-entry .agent-tag.b { background: var(--agent-b-dim); color: var(--agent-b); }
+
+        .empty-trace {
+            color: var(--text-dim);
+            font-size: 13px;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* --- Loading Spinner --- */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-active);
+            border-top-color: var(--text-bright);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            height: 80px;
+            color: var(--text-dim);
+            font-size: 13px;
+        }
+
+        /* --- Architecture diagram --- */
+        .arch-section {
+            margin-top: 32px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .arch-title {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 16px;
+        }
+
+        .arch-diagram {
+            font-family: var(--mono);
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--text-dim);
+            white-space: pre;
+            overflow-x: auto;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .arch-diagram .highlight-a { color: var(--agent-a); }
+        .arch-diagram .highlight-b { color: var(--agent-b); }
+        .arch-diagram .highlight-green { color: var(--accent-green); }
+        .arch-diagram .highlight-red { color: var(--accent-red); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-badge">
+                <span class="dot"></span>
+                AWS Bedrock AgentCore Identity
+            </div>
+            <h1>Dual Agent <span>OAuth Scoping</span></h1>
+            <p>Paste any GitHub or Jira link below. Both agents evaluate it — one accepts, the other rejects. AgentCore Identity enforces which agent can access which service.</p>
+        </div>
+
+        <!-- Input -->
+        <div class="input-section">
+            <div class="input-label">Paste a link</div>
+            <div class="input-row">
+                <input
+                    type="text"
+                    id="urlInput"
+                    placeholder="https://github.com/owner/repo or https://team.atlassian.net/browse/PROJ-123"
+                    autofocus
+                />
+                <button class="btn btn-primary" id="processBtn" onclick="processUrl()">
+                    Run Agents
+                </button>
+            </div>
+            <div class="quick-links">
+                <button class="quick-link github" onclick="setUrl('https://github.com/langchain-ai/langgraph')">
+                    ↗ github.com/langchain-ai/langgraph
+                </button>
+                <button class="quick-link jira" onclick="setUrl('https://myteam.atlassian.net/browse/PROJ-42')">
+                    ↗ myteam.atlassian.net/browse/PROJ-42
+                </button>
+                <button class="quick-link github" onclick="setUrl('https://github.com/aws/amazon-bedrock-agentcore-samples')">
+                    ↗ aws/bedrock-agentcore-samples
+                </button>
+            </div>
+        </div>
+
+        <!-- Agent Cards -->
+        <div class="agents-grid">
+            <!-- Agent A -->
+            <div class="agent-card agent-a" id="agentACard">
+                <div class="agent-card-header">
+                    <div class="agent-name">
+                        <div class="agent-icon">A</div>
+                        <div>
+                            <div class="agent-name-text">GitHub Agent</div>
+                            <div class="agent-name-sub">Agent A · LangGraph</div>
+                        </div>
+                    </div>
+                    <div class="agent-scope-badge">GitHub Only</div>
+                </div>
+                <div class="agent-card-body" id="agentABody">
+                    <div class="agent-idle">Waiting for a link…</div>
+                </div>
+            </div>
+
+            <!-- Agent B -->
+            <div class="agent-card agent-b" id="agentBCard">
+                <div class="agent-card-header">
+                    <div class="agent-name">
+                        <div class="agent-icon">B</div>
+                        <div>
+                            <div class="agent-name-text">Jira Agent</div>
+                            <div class="agent-name-sub">Agent B · LangGraph</div>
+                        </div>
+                    </div>
+                    <div class="agent-scope-badge">Jira Only</div>
+                </div>
+                <div class="agent-card-body" id="agentBBody">
+                    <div class="agent-idle">Waiting for a link…</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trace Log -->
+        <div class="trace-section">
+            <div class="trace-header">
+                <span class="trace-title">Agent Execution Trace</span>
+                <button class="quick-link" onclick="clearTrace()" style="font-size:10px;padding:3px 8px;">Clear</button>
+            </div>
+            <div class="trace-body" id="traceBody">
+                <div class="empty-trace">No executions yet. Paste a link and hit "Run Agents".</div>
+            </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="arch-section">
+            <div class="arch-title">How AgentCore Identity Scoping Works</div>
+            <div class="arch-diagram">User pastes link
+       │
+       ▼
+  ┌─────────────────────────────────────────┐
+  │   Both agents receive the same URL      │
+  └──────┬──────────────────────┬───────────┘
+         │                      │
+    <span class="highlight-a">Agent A</span>                 <span class="highlight-b">Agent B</span>
+  <span class="highlight-a">identity: github</span>        <span class="highlight-b">identity: jira</span>
+         │                      │
+         ▼                      ▼
+  ┌──────────────┐     ┌──────────────┐
+  │ AgentCore    │     │ AgentCore    │
+  │ scope_check  │     │ scope_check  │
+  └──────┬───────┘     └──────┬───────┘
+         │                    │
+    if github.com:       if atlassian.net:
+    <span class="highlight-green">✅ AUTHORIZED</span>        <span class="highlight-green">✅ AUTHORIZED</span>
+    else:                else:
+    <span class="highlight-red">🚫 REJECTED</span>          <span class="highlight-red">🚫 REJECTED</span>
+         │                    │
+         ▼                    ▼
+  OAuth via AgentCore   OAuth via AgentCore
+  (scoped to GitHub)    (scoped to Jira)</div>
+        </div>
+    </div>
+
+    <script>
+        // --- Session Management ---
+        let sessionId = localStorage.getItem('session_id') || crypto.randomUUID();
+        localStorage.setItem('session_id', sessionId);
+
+        // Check URL params for OAuth callback results
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('auth') === 'success') {
+            const provider = params.get('provider');
+            if (params.get('session_id')) {
+                sessionId = params.get('session_id');
+                localStorage.setItem('session_id', sessionId);
+            }
+            window.history.replaceState({}, '', '/');
+        }
+
+        // --- Set URL from quick links ---
+        function setUrl(url) {
+            document.getElementById('urlInput').value = url;
+            document.getElementById('urlInput').focus();
+        }
+
+        // --- Process URL ---
+        async function processUrl() {
+            const input = document.getElementById('urlInput');
+            const btn = document.getElementById('processBtn');
+            const url = input.value.trim();
+
+            if (!url) return;
+
+            // Show loading
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span>';
+            document.getElementById('agentABody').innerHTML = '<div class="loading-state"><span class="spinner"></span> Evaluating…</div>';
+            document.getElementById('agentBBody').innerHTML = '<div class="loading-state"><span class="spinner"></span> Evaluating…</div>';
+
+            try {
+                const resp = await fetch('/api/process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, session_id: sessionId }),
+                });
+
+                const data = await resp.json();
+
+                // Render Agent A result
+                renderAgentResult('agentABody', data.agents.github_agent, 'a');
+
+                // Render Agent B result
+                renderAgentResult('agentBBody', data.agents.jira_agent, 'b');
+
+                // Update trace
+                updateTrace(data);
+
+            } catch (err) {
+                document.getElementById('agentABody').innerHTML = renderError(err.message);
+                document.getElementById('agentBBody').innerHTML = renderError(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Run Agents';
+            }
+        }
+
+        // --- Render Agent Result ---
+        function renderAgentResult(containerId, agentData, agentLetter) {
+            const container = document.getElementById(containerId);
+            const result = agentData.result;
+            const action = result.action || 'UNKNOWN';
+
+            if (action === 'REJECTED') {
+                container.innerHTML = `
+                    <div class="result-block rejected">
+                        <div class="result-action rejected">🚫 Rejected</div>
+                        <div class="result-detail">
+                            ${escapeHtml(result.reason || 'Unauthorized provider')}<br><br>
+                            <code>${escapeHtml(result.hint || '')}</code>
+                        </div>
+                    </div>
+                `;
+            } else if (action === 'AUTH_REQUIRED') {
+                container.innerHTML = `
+                    <div class="result-block auth-required">
+                        <div class="result-action auth-required">🔐 Auth Required</div>
+                        <div class="result-detail">
+                            ${escapeHtml(result.message || 'OAuth authorization needed.')}
+                        </div>
+                        <a class="auth-btn" href="${escapeHtml(result.auth_url)}" target="_self">
+                            → Authorize ${escapeHtml(result.provider || '')}
+                        </a>
+                    </div>
+                `;
+            } else if (action === 'SUCCESS') {
+                const details = Object.entries(result)
+                    .filter(([k]) => !['action', 'agent'].includes(k))
+                    .map(([k, v]) => `<strong>${k}:</strong> ${escapeHtml(String(v))}`)
+                    .join('<br>');
+
+                container.innerHTML = `
+                    <div class="result-block accepted">
+                        <div class="result-action accepted">✅ Accepted & Fetched</div>
+                        <div class="result-detail">${details}</div>
+                    </div>
+                `;
+            } else if (action === 'ERROR') {
+                container.innerHTML = `
+                    <div class="result-block error">
+                        <div class="result-action error">❌ Error</div>
+                        <div class="result-detail">${escapeHtml(result.error || 'Unknown error')}</div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="result-block error">
+                        <div class="result-action error">? Unknown</div>
+                        <div class="result-detail"><code>${escapeHtml(JSON.stringify(result, null, 2))}</code></div>
+                    </div>
+                `;
+            }
+        }
+
+        // --- Trace ---
+        let traceEntries = [];
+
+        function updateTrace(data) {
+            const body = document.getElementById('traceBody');
+
+            // Add entries from both agents
+            const ghTrace = data.agents.github_agent.trace || [];
+            const jiraTrace = data.agents.jira_agent.trace || [];
+
+            const timestamp = new Date().toLocaleTimeString();
+
+            traceEntries.push({ time: timestamp, agent: 'a', text: `URL: ${data.url}` });
+            ghTrace.forEach(t => traceEntries.push({ time: timestamp, agent: 'a', text: t }));
+            jiraTrace.forEach(t => traceEntries.push({ time: timestamp, agent: 'b', text: t }));
+            traceEntries.push({ time: timestamp, agent: null, text: '───' });
+
+            body.innerHTML = traceEntries.map(e => {
+                if (e.agent === null) return `<div class="trace-entry" style="color:var(--border-active)">${e.text}</div>`;
+                const tag = e.agent === 'a'
+                    ? '<span class="agent-tag a">A</span>'
+                    : '<span class="agent-tag b">B</span>';
+                return `<div class="trace-entry">${tag} <span style="color:var(--text-dim)">${e.time}</span> ${escapeHtml(e.text)}</div>`;
+            }).join('');
+
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function clearTrace() {
+            traceEntries = [];
+            document.getElementById('traceBody').innerHTML = '<div class="empty-trace">Trace cleared.</div>';
+        }
+
+        // --- Helpers ---
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function renderError(msg) {
+            return `<div class="result-block error">
+                <div class="result-action error">❌ Error</div>
+                <div class="result-detail">${escapeHtml(msg)}</div>
+            </div>`;
+        }
+
+        // Enter key support
+        document.getElementById('urlInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') processUrl();
+        });
+    </script>
+</body>
+</html>
