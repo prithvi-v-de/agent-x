@@ -14,9 +14,9 @@ set -euo pipefail
 
 REGION="${AWS_REGION:-us-east-1}"
 ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-ECR_REPO="agentcore-identity-showcase"
+ECR_REPO="agent-x"
 IMAGE_TAG="latest"
-SERVICE_NAME="agentcore-identity-showcase"
+SERVICE_NAME="agent-x"
 
 echo "=============================================="
 echo "  Deploying to App Runner"
