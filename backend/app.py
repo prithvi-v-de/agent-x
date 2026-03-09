@@ -1,8 +1,3 @@
-"""
-AgentCore Identity Showcase - Flask Backend
-EXTREME LOGGING VERSION
-"""
-
 import os
 import sys
 import json
