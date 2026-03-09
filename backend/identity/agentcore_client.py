@@ -49,7 +49,7 @@ class AgentCoreIdentityClient:
         logger.info("=" * 70)
         logger.info(f"  Identity ARN:     {identity_arn}")
         logger.info(f"  Allowed Provider: {allowed_provider}")
-        logger.info(f"  AWS Region:       {os.getenv('AWS_REGION', 'us-east-1')}")
+        logger.info(f"  AWS Region:       {os.getenv('AWS_REGION', 'us-east-2')}")
 
         self.identity_arn = identity_arn
         self.allowed_provider = allowed_provider
