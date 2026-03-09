@@ -3,7 +3,7 @@ name: Build & Deploy to App Runner
 on:
   push:
     branches: [main]
-  workflow_dispatch:  # lets you trigger manually from GitHub UI too
+  workflow_dispatch:  
 
 env:
   AWS_REGION: us-east-2
