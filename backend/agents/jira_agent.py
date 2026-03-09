@@ -1,10 +1,3 @@
-"""
-Agent B — Jira Agent (LangGraph)
-=================================
-Scoped to Jira ONLY via AgentCore Identity.
-EXTREME LOGGING at every node, edge, and decision.
-"""
-
 import os
 import time
 import logging
