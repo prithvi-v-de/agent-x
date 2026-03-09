@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-REGION="${AWS_REGION:-us-east-1}"
+REGION="${AWS_REGION:-us-east-2}"
 ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 ECR_REPO="agent-x"
 IMAGE_TAG="latest"
