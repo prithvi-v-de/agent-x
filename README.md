@@ -6,10 +6,6 @@ AgentCore Identity enforces which agent can talk to which service
 > All powered by **AWS Bedrock AgentCore Identity**.
 **scoping OAuth credentials per-agent so each agent can ONLY access the services it's authorized for.**
 
-| Agent | Authorized For | Rejects |
-|-------|---------------|---------|
-| Agent A (GitHub Agent) | `github.com/*` links | Any Jira/Atlassian link |
-| Agent B (Jira Agent) | `*.atlassian.net/*` links | Any GitHub link |
 
 ---
 
