@@ -6,7 +6,7 @@ on:
   workflow_dispatch:  # lets you trigger manually from GitHub UI too
 
 env:
-  AWS_REGION: us-east-1
+  AWS_REGION: us-east-2
   ECR_REPO: agent-x
   APP_RUNNER_SERVICE: agent-x
 
