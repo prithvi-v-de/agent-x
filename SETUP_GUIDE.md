@@ -1,6 +1,4 @@
-# AgentCore Identity Showcase — The "I Am a Noob" Deployment Guide
 
-**Every single click. Every single screen. No terminal unless absolutely necessary.**
 
 ---
 
