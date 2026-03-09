@@ -1,8 +1,6 @@
 """
-Agent A — GitHub Agent (LangGraph)
-===================================
-Scoped to GitHub ONLY via AgentCore Identity.
-EXTREME LOGGING at every node, edge, and decision.
+Agent A — GitHub Agent
+==================================
 """
 
 import os
