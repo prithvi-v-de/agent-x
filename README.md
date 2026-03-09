@@ -216,7 +216,7 @@ token = agentcore_identity.get_token(
 ## Project Structure
 
 ```
-agentcore-identity-showcase/
+agent-x/
 ├── README.md                          ← You are here
 ├── .env.example                       ← Template for env vars
 ├── Dockerfile                         ← Single container for App Runner
