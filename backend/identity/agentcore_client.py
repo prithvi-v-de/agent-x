@@ -1,11 +1,3 @@
-"""
-AgentCore Identity Client
-==========================
-Wraps AWS Bedrock AgentCore Identity APIs for OAuth credential management.
-
-LOGGING: Every function entry, exit, decision, and data transformation is logged.
-"""
-
 import os
 import json
 import time
@@ -61,7 +53,7 @@ class AgentCoreIdentityClient:
 
         self.identity_arn = identity_arn
         self.allowed_provider = allowed_provider
-        self.region = os.getenv("AWS_REGION", "us-east-1")
+        self.region = os.getenv("AWS_REGION", "us-east-2")
 
         logger.info(f"  Creating boto3 bedrock-agent-runtime client in {self.region}...")
         self.bedrock_client = boto3.client(
